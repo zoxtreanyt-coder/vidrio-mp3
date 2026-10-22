@@ -22,18 +22,24 @@ import java.io.FileOutputStream;
 @CapacitorPlugin(
     name = "MusicLib",
     permissions = {
-        @Permission(alias = "audio", strings = { "android.permission.READ_MEDIA_AUDIO" }),
-        @Permission(alias = "storage", strings = { Manifest.permission.READ_EXTERNAL_STORAGE })
+        @Permission(alias = "permission", strings = { 
+            Manifest.permission.READ_MEDIA_AUDIO, 
+            Manifest.permission.READ_EXTERNAL_STORAGE 
+        })
     }
 )
 public class MusicLibPlugin extends Plugin {
 
-    private String alias() {
-        return Build.VERSION.SDK_INT >= 33 ? "audio" : "storage";
+    private String getAlias() {
+        return "permission";
     }
 
     private boolean granted() {
-        return getPermissionState(alias()) == PermissionState.GRANTED;
+        try {
+            return getPermissionState(getAlias()) == PermissionState.GRANTED;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @PluginMethod
@@ -51,7 +57,7 @@ public class MusicLibPlugin extends Plugin {
             call.resolve(r);
             return;
         }
-        requestPermissionForAlias(alias(), call, "accessResult");
+        requestPermissionForAlias(getAlias(), call, "accessResult");
     }
 
     @PermissionCallback
