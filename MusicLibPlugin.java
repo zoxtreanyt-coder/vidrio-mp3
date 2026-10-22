@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.os.Build;
 import android.provider.MediaStore;
+import androidx.core.content.ContextCompat;
+import android.content.pm.PackageManager;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.PermissionState;
@@ -22,19 +24,21 @@ import java.io.FileOutputStream;
 @CapacitorPlugin(
     name = "MusicLib",
     permissions = {
-        @Permission(alias = "audio", strings = { Manifest.permission.READ_MEDIA_AUDIO }),
-        @Permission(alias = "storage", strings = { Manifest.permission.READ_EXTERNAL_STORAGE })
+        @Permission(alias = "storage", strings = { 
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            "android.permission.READ_MEDIA_AUDIO"
+        })
     }
 )
 public class MusicLibPlugin extends Plugin {
 
-    private String getAlias() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? "audio" : "storage";
-    }
-
-    private boolean granted() {
+    private boolean checkMyPermission() {
         try {
-            return getPermissionState(getAlias()) == PermissionState.GRANTED;
+            if (Build.VERSION.SDK_INT >= 33) {
+                return ContextCompat.checkSelfPermission(getContext(), "android.permission.READ_MEDIA_AUDIO") == PackageManager.PERMISSION_GRANTED;
+            } else {
+                return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+            }
         } catch (Exception e) {
             return false;
         }
@@ -43,31 +47,31 @@ public class MusicLibPlugin extends Plugin {
     @PluginMethod
     public void checkAccess(PluginCall call) {
         JSObject r = new JSObject();
-        r.put("granted", granted());
+        r.put("granted", checkMyPermission());
         call.resolve(r);
     }
 
     @PluginMethod
     public void requestAccess(PluginCall call) {
-        if (granted()) {
+        if (checkMyPermission()) {
             JSObject r = new JSObject();
             r.put("granted", true);
             call.resolve(r);
             return;
         }
-        requestPermissionForAlias(getAlias(), call, "accessResult");
+        requestPermissionForAlias("storage", call, "accessResult");
     }
 
     @PermissionCallback
     private void accessResult(PluginCall call) {
         JSObject r = new JSObject();
-        r.put("granted", granted());
+        r.put("granted", checkMyPermission());
         call.resolve(r);
     }
 
     @PluginMethod
     public void scan(PluginCall call) {
-        if (!granted()) {
+        if (!checkMyPermission()) {
             call.reject("Sin permiso");
             return;
         }
