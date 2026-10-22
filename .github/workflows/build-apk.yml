@@ -2,55 +2,53 @@ name: Compilar APK
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 jobs:
-  BUILD:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
-
       - name: Instalar dependencias
         run: npm install
-
       - name: Preparar web
         run: |
           mkdir -p www
           cp index.html www/index.html
           cp node_modules/jsmediatags/dist/jsmediatags.min.js www/jsmediatags.min.js
-
-      - name: Crear proyecto android
+      - name: Crear proyecto Android
         run: npx cap add android
-
       - name: Agregar acceso nativo a la musica
         run: |
           mkdir -p android/app/src/main/java/com/vidrio/player
           cp MusicLibPlugin.java MainActivity.java android/app/src/main/java/com/vidrio/player/
-          sed -i '/<\/manifest>/i <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />' android/app/src/main/AndroidManifest.xml
-          grep -n "uses-permission" android/app/src/main/AndroidManifest.xml
+          
+          # Inyectar permisos directamente antes del cierre de manifest o application
+          FILE="android/app/src/main/AndroidManifest.xml"
+          PERMS='<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />\n<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />'
+          
+          sed -i "/<application/i $PERMS" "$FILE"
+          echo "=== AndroidManifest.xml Resultante ==="
+          cat "$FILE"
 
       - name: Sincronizar
         run: npx cap sync android
-
       - name: Compilar APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
-
       - name: Guardar APK
         uses: actions/upload-artifact@v4
         with:
           name: vidrio-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          
