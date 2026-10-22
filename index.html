@@ -16,7 +16,7 @@
   --glass-a:rgba(255,255,255,.15); --glass-b:rgba(255,255,255,.05); --glass-line:rgba(255,255,255,.17); --glass-hi:rgba(255,255,255,.3);
   --hair:rgba(255,255,255,.09); --shadow:rgba(0,0,0,.42); --track:rgba(255,255,255,.2); --bar:rgba(255,255,255,.28);
   --accent:#f5f6fb; --on-accent:#0b0b0e; --chip-on:#f5f6fb; --chip-on-fg:#0b0b0e;
-  --sheet:rgba(11,11,14,.75); --amb-mix:65%;
+  --sheet:rgba(11,11,14,.78); --amb-mix:65%;
   color-scheme:dark;
   transition:--amb1 1.2s ease,--amb2 1.2s ease;
 }
@@ -25,13 +25,13 @@
   --glass-a:rgba(255,255,255,.74); --glass-b:rgba(255,255,255,.42); --glass-line:rgba(255,255,255,.9); --glass-hi:rgba(255,255,255,1);
   --hair:rgba(17,19,27,.08); --shadow:rgba(40,50,90,.18); --track:rgba(17,19,27,.16); --bar:rgba(17,19,27,.2);
   --accent:#15161b; --on-accent:#fff; --chip-on:#11131b; --chip-on-fg:#fff;
-  --sheet:rgba(236,236,240,.82); --amb-mix:45%; color-scheme:light}}
+  --sheet:rgba(236,236,240,.85); --amb-mix:45%; color-scheme:light}}
 :root[data-theme="light"]{
   --bg:#ececf0; --fg:#11131b; --muted:rgba(17,19,27,.64); --faint:rgba(17,19,27,.42);
   --glass-a:rgba(255,255,255,.74); --glass-b:rgba(255,255,255,.42); --glass-line:rgba(255,255,255,.9); --glass-hi:rgba(255,255,255,1);
   --hair:rgba(17,19,27,.08); --shadow:rgba(40,50,90,.18); --track:rgba(17,19,27,.16); --bar:rgba(17,19,27,.2);
   --accent:#15161b; --on-accent:#fff; --chip-on:#11131b; --chip-on-fg:#fff;
-  --sheet:rgba(236,236,240,.82); --amb-mix:45%; color-scheme:light}
+  --sheet:rgba(236,236,240,.85); --amb-mix:45%; color-scheme:light}
 
 *{box-sizing:border-box}
 html,body{height:100%; width:100%; margin:0; padding:0; overflow:hidden; background:var(--bg); color:var(--fg); font:400 15px/1.35 var(--f-body); -webkit-tap-highlight-color:transparent;}
@@ -51,7 +51,7 @@ button:focus-visible,input:focus-visible,label:focus-visible{outline:2px solid v
   radial-gradient(80% 50% at 15% -10%,color-mix(in srgb,var(--amb1) var(--amb-mix),transparent),transparent 75%),
   radial-gradient(70% 50% at 95% 35%,color-mix(in srgb,var(--amb2) calc(var(--amb-mix) - 10%),transparent),transparent 75%),
   radial-gradient(80% 50% at 5% 105%,color-mix(in srgb,var(--amb2) calc(var(--amb-mix) - 20%),transparent),transparent 75%);
-  filter:blur(32px);transform:scale(1.1);
+  filter:blur(36px);transform:scale(1.1);
 }
 #app{position:relative;z-index:1;height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column}
 #views{flex:1;overflow-y:auto;overflow-x:hidden;padding:18px 16px 210px;scrollbar-width:none;overscroll-behavior:contain}
