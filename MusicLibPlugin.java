@@ -22,16 +22,14 @@ import java.io.FileOutputStream;
 @CapacitorPlugin(
     name = "MusicLib",
     permissions = {
-        @Permission(alias = "permission", strings = { 
-            Manifest.permission.READ_MEDIA_AUDIO, 
-            Manifest.permission.READ_EXTERNAL_STORAGE 
-        })
+        @Permission(alias = "audio", strings = { Manifest.permission.READ_MEDIA_AUDIO }),
+        @Permission(alias = "storage", strings = { Manifest.permission.READ_EXTERNAL_STORAGE })
     }
 )
 public class MusicLibPlugin extends Plugin {
 
     private String getAlias() {
-        return "permission";
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? "audio" : "storage";
     }
 
     private boolean granted() {
